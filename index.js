@@ -1,3 +1,4 @@
+const debug = require('debug')('app:startup');
 const config = require('config');
 const morgan = require('morgan');
 const helmet = require('helmet');
@@ -5,6 +6,9 @@ const Joi = require('joi');
 const logger = require('./logger');
 const express = require('express');
 const app = express();
+
+app.set('view engine', 'pug');
+app.set('views', './views');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -18,7 +22,7 @@ console.log('Mail Password: ' + config.get('mail.password'));
 
 if(app.get('env') === 'development') {
     app.use(morgan('tiny'));
-    console.log('Morgan enabled...');
+    debug('Morgan enabled...');
 }
 
 app.use(logger);
@@ -30,7 +34,7 @@ const courses = [
 ];
 
 app.get('/', (req, res) => {
-    res.send('Hello World');
+    res.render('index', { title: 'My Express App', message: 'Hello'});
 });
 
 app.get('/api/courses', (req, res) => {
